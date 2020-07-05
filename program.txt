@@ -1,0 +1,7 @@
+macro doTest(a1,a2)
+    @a2
+    D=A
+    @a1
+    M=D
+endMacro
+doTest(1,2)

@@ -1,0 +1,9 @@
+def hello2(abc,dfc)
+    yo
+    abc
+    dfc
+endDef
+
+hi
+
+hi

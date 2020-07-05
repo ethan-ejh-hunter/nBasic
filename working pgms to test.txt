@@ -1,0 +1,35 @@
+var abc
+@abc
+@12
+D=A
+
+
+var abc
+var a1
+@12
+D=A
+@abc
+M=D
+@a1
+M=D
+
+
+macro doTest(a1,a2)
+    @a2
+    D=A
+    @a1
+    M=D
+endMacro
+doTest(1,2)
+
+
+
+include basicMacros.txt
+
+var toShift
+@12
+D=A
+@toShift
+M=D
+
+shiftUp(toShift, 3)

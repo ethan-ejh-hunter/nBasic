@@ -1,0 +1,59 @@
+var shiftReadIndex
+var shiftWriteIndex
+var newShift
+list shiftingBitmasks 1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16384 32768
+
+macro shiftUp(valLocation, times) //Tested!!
+    @times
+    D=A
+    @shiftIndex
+    M=A
+    label LOOP
+        @valLocation
+        D=M
+        M=M+D
+        @times
+        M=M-1
+        D=M
+        @LOOP
+        D;JGT
+endMacro
+
+macro shiftDown(valLocation, times)
+    @shiftingBitmasks
+    D=A
+    @writeIndex                 //writeIndex now points to the first entry in shiftingBitmasks
+    M=D
+    @times                      //add the number of times to shift
+    D=D+M                       //so D = times + a pointer to shiftingBitmasks
+    @readIndex                  //so readIndex needs to point to the times'th entry in shiftingBitmasks
+    M=D
+    label LOOP
+        @readIndex
+        A=M                     //we want to follow the pointer readIndex, index register should point to readIndex
+        D=M                     //put the bitmask it points to into D
+        @valLocation
+        D=D&M                   //get the boolean for D&M
+        @NOTTRUE                //load the jump for notTrue
+        D;JEQ                   //jump if the value of D&M is 0
+            @writeIndex
+            A=M                 //follow the writeIndex pointer
+            D=M                 //put the bitmask it points to in D
+            @newShift
+            M=D+M               //add that bitmask to the shifted number
+        label NOTTRUE
+        @readIndex
+        D=M                     //store the readIndex in D for comparing
+        @15+shiftingBitmasks    //get index of last item in list
+        D=D-A                   //test it
+        @DONE
+        D;JGE                   //jump DONE if readIndex >= last item in bitmask list
+        @writeIndex
+        M=M+1
+        @readIndex
+        M=M+1
+        @LOOP
+        0;JMP
+    label DONE
+
+

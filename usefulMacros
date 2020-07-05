@@ -1,0 +1,199 @@
+macro push(reg)
+	SP+=1
+	Mem[SP]=reg
+	endMacro
+
+macro pop(reg)
+	Mem[SP]=reg
+	SP-=1
+	endMacro
+    
+macro setMemToValue(memLoc,value)
+    @memLoc
+    M=value
+endMacro
+
+macro jumpTo(location)
+    @location
+    0;jmp
+endMacro
+
+macro double(location)
+	@location
+	D=M
+	M=D+M
+endMacro
+
+macro mult(reg0, reg1, result)
+	label LOOP
+		@i
+		D=M
+		@reg0
+		D=M-D
+		@END
+		D;JEQ // if i < MEM[R0] goto END
+
+		@reg1
+		D=M
+		@result
+		M=D+M // result += MEM[R1]
+
+		@i
+		M=M+1 // i++
+
+		@LOOP
+		0;JMP // goto LOOP
+
+	label END
+	@result
+	D=M
+	@R2
+	M=D
+	endMacro
+
+macro move(source,dest)
+	@source
+	D=M
+	@dest
+	M=D
+	endMacro
+
+macro increment(location)
+	@location
+	M=M+1
+	endMacro
+
+macro comparePtrs(ptr1,ptr2)
+	followPtr(ptr1)
+	D=M
+	followPtr(ptr2)
+	D=D-M
+	endMacro
+
+macro compareMemoryToPtr(loc1,ptr2)
+	@loc1
+	D=M
+	followPtr(ptr2)
+	D=D-M
+	endMacro
+	
+macro compareMemory(location1,location2)
+	@location1
+	D=M
+	@location2
+	D=D-M
+	endMacro
+
+macro followPtr(ptr)
+	@ptr
+	A=M
+	endMacro
+
+macro subPtrFromLoc(location,ptr)
+	followPtr(ptr)
+	D=M
+	@location
+	M=M-D
+	endMacro
+
+macro addPtrToLoc(location,ptr)
+	followPtr(ptr)
+	D=M
+	@location
+	M=D+M
+	endMacro
+
+macro jumpMemoryNotEqual(location1,location2,jumpLocation)
+	compareMemory(location1,location2)
+	@jumpLocation //load A register
+	D;JNZ
+	endMacro
+	macro jumpMemoryEqual(location,val,jumpLocation)
+	@location
+	D=M
+	@val
+	D=D-A
+	@jumpLocation
+	D;JIZ
+	endMacro
+macro jumpMemoryNotEqual(location1,location2,jumpLocation)
+	compareMemory(location1,location2)
+	@jumpLocation
+	D;JNZ
+	endMacro
+macro jumpMemoryGreaterThan(location1,location2,jumpLocation)
+	compareMemory(location1,location2)
+	@jumpLocation
+	D;JGZ
+	endMacro
+macro jumpMemoryLessThan(location1,location2,jumpLocation)
+	compareMemory(location1,location2)
+	@jumpLocation
+	D;JLZ
+	endMacro
+macro jumpMemoryLessThanEqual(location1,location2,jumpLocation)
+	compareMemory(location1,location2)
+	@jumpLocation
+	D;JLE
+	endMacro
+macro jumpMemoryGreaterThanEqual(location1,location2,jumpLocation)
+	compareMemory(location1,location2)
+	@jumpLocation
+	D;JGE
+	endMacro
+macro jumpMemoryNotEqual(location1,location2,jumpLocation)
+	compareMemory(location1,location2)
+	@jumpLocation
+	D;JNZ
+	endMacro
+
+macro jumpEqual(location,val,jumpLocation)
+	@location
+	D=M
+	@val
+	D=D-A
+	@jumpLocation
+	D;JIZ
+	endMacro
+
+macro jumpNotEqual(location,val,jumpLocation)
+	@location
+	D=M
+	@val
+	D=D-A
+	@jumpLocation
+	D;JNZ
+	endMacro
+
+macro jumpGreaterThan(location,val,jumpLocation)
+	@location
+	D=M
+	@val
+	D=D-A
+	@jumpLocation
+	D;JGZ
+	endMacro
+macro jumpLessThan(location,val,jumpLocation)
+	@location
+	D=M
+	@val
+	D=D-A
+	@jumpLocation
+	D;JLZ
+	endMacro
+macro jumpLessThanEqual(location,val,jumpLocation)
+	@location
+	D=M
+	@val
+	D=D-A
+	@jumpLocation
+	D;JLE
+	endMacro
+macro jumpGreaterThanEqual(location,val,jumpLocation)
+	@location
+	D=M
+	@val
+	D=D-A
+	@jumpLocation
+	D;JGE
+	endMacro

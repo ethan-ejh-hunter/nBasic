@@ -1,0 +1,14 @@
+include basicMacros.txt
+var numToShift
+var numTimes
+
+
+@42
+D=A
+@numToShift
+M=D
+
+@numTimes
+M=1
+
+shiftDown(numToShift, numTimes)
